@@ -15,9 +15,13 @@
       // Runs before first paint: always set an explicit theme (saved choice, else the OS preference).
       (function () {
         var t = null;
-        try { t = localStorage.getItem("theme"); } catch (e) {}
+        try {
+          t = localStorage.getItem("theme");
+        } catch (e) {}
         if (t !== "light" && t !== "dark") {
-          t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+          t = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
         }
         document.documentElement.setAttribute("data-theme", t);
 
@@ -33,11 +37,24 @@
   </head>
 
   <body>
-    <button class="side-toggle" id="sideToggle" type="button"
-            aria-controls="sidebar" aria-expanded="true"
-            aria-label="Hide sidebar" title="Hide sidebar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <button
+      class="side-toggle"
+      id="sideToggle"
+      type="button"
+      aria-controls="sidebar"
+      aria-expanded="true"
+      aria-label="Hide sidebar"
+      title="Hide sidebar"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
         <path d="M15 5l-7 7 7 7" />
       </svg>
     </button>
@@ -52,16 +69,45 @@
           <span class="theme-label">Appearance</span>
           <div class="theme-seg" role="radiogroup" aria-label="Colour theme">
             <span class="thumb"></span>
-            <button type="button" class="opt" role="radio" aria-checked="false" data-theme-set="light">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
-                <path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" />
+            <button
+              type="button"
+              class="opt"
+              role="radio"
+              aria-checked="false"
+              data-theme-set="light"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="4"
+                  fill="currentColor"
+                  stroke="none"
+                />
+                <path
+                  d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"
+                />
               </svg>
               Light
             </button>
-            <button type="button" class="opt" role="radio" aria-checked="true" data-theme-set="dark">
+            <button
+              type="button"
+              class="opt"
+              role="radio"
+              aria-checked="true"
+              data-theme-set="dark"
+            >
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a.6.6 0 0 0-.8-.7A9.5 9.5 0 1 0 21.2 15a.6.6 0 0 0-.7-.8z" />
+                <path
+                  d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a.6.6 0 0 0-.8-.7A9.5 9.5 0 1 0 21.2 15a.6.6 0 0 0-.7-.8z"
+                />
               </svg>
               Dark
             </button>
@@ -103,11 +149,7 @@
 
         <!-- SAMPLE INSTANCE -->
 
-        <div class="section">
-          <button class="sample-btn" id="loadSample">
-            Use bundled sample instance
-          </button>
-        </div>
+        <div class="section"></div>
 
         <!-- SOLVER -->
 
@@ -203,8 +245,22 @@
             </div>
             <div class="net-controls">
               <label for="netWeek">Week</label>
-              <button class="net-play-btn" id="netPlay" type="button" title="Auto-advance through weeks">▶</button>
-              <input type="range" id="netWeek" min="1" max="1" value="1" step="1" />
+              <button
+                class="net-play-btn"
+                id="netPlay"
+                type="button"
+                title="Auto-advance through weeks"
+              >
+                ▶
+              </button>
+              <input
+                type="range"
+                id="netWeek"
+                min="1"
+                max="1"
+                value="1"
+                step="1"
+              />
               <span class="net-week-label" id="netWeekLabel">Week 1</span>
               <div class="net-legend">
                 <span><i class="sw sw-idle"></i>Idle</span>
@@ -265,7 +321,11 @@
                 authoritative
               </span>
             </div>
-            <div class="cards" id="scoreCards" style="padding: 16px; margin: 0"></div>
+            <div
+              class="cards"
+              id="scoreCards"
+              style="padding: 16px; margin: 0"
+            ></div>
           </div>
 
           <!-- ============================= -->
@@ -326,7 +386,12 @@
               <h3>Contract completion — RESULTS.csv</h3>
 
               <span class="hint-group">
-                <input type="text" id="resFilter" class="table-filter" placeholder="Filter contract…" />
+                <input
+                  type="text"
+                  id="resFilter"
+                  class="table-filter"
+                  placeholder="Filter contract…"
+                />
                 <span class="hint" id="resHint"> </span>
               </span>
             </div>
@@ -373,7 +438,12 @@
               <h3>Access placements — SCHEDULE_ACCESS.csv</h3>
 
               <span class="hint-group">
-                <input type="text" id="accFilter" class="table-filter" placeholder="Filter activity…" />
+                <input
+                  type="text"
+                  id="accFilter"
+                  class="table-filter"
+                  placeholder="Filter activity…"
+                />
                 <span class="hint" id="accHint"> </span>
               </span>
             </div>
