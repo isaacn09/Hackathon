@@ -485,9 +485,14 @@ function runScenario(inst, scenario) {
     // ("absorb schedule pressure with Priority-3 slip first, reach for ECLO next").
     const contract = inst.project[act.contract_number];
     const contractTier = +contract.contract_priority;
-    const contractWeight = contractTier === 1 ? 100 : contractTier === 2 ? 10 : 1;
+    const contractWeight =
+      contractTier === 1 ? 100 : contractTier === 2 ? 10 : 1;
     const activityNudge =
-      +act.activity_priority === 1 ? 0.3 : +act.activity_priority === 2 ? 0.2 : 0;
+      +act.activity_priority === 1
+        ? 0.3
+        : +act.activity_priority === 2
+          ? 0.2
+          : 0;
     const dayCost = contractWeight * (1 + activityNudge);
     const ECLO_NIGHT_COST = 5; // matches Score_B/Score_C's 5x eclo_nights_total term
 
@@ -639,7 +644,11 @@ function computeSoftScores(inst, sched, scenario) {
       );
       const nudge = Math.max(
         ...driverActs.map((a) =>
-          +a.activity_priority === 1 ? 0.3 : +a.activity_priority === 2 ? 0.2 : 0,
+          +a.activity_priority === 1
+            ? 0.3
+            : +a.activity_priority === 2
+              ? 0.2
+              : 0,
         ),
       );
       priorityWeightedScore += weight * (1 + nudge) * overrun;
@@ -678,7 +687,13 @@ function capacityHotspots(inst, sched, limit = 12) {
     const [loc, wk] = k.split("|");
     const nominal = inst.supplyCap[loc] ?? 4;
     if (nominal <= 0) continue;
-    rows.push({ loc, week: +wk, used: arr.length, nominal, ratio: arr.length / nominal });
+    rows.push({
+      loc,
+      week: +wk,
+      used: arr.length,
+      nominal,
+      ratio: arr.length / nominal,
+    });
   }
   rows.sort((a, b) => b.ratio - a.ratio || b.used - a.used);
   return rows.slice(0, limit);
@@ -694,18 +709,52 @@ function capacityHotspots(inst, sched, limit = 12) {
    always read live from the solved schedule.
    ===================================================================== */
 const NET_STATION_X = {
-  S01: 200, S02: 270, S03: 340, S04: 410, H01: 478, H02: 578,
-  S05: 650, S06: 720, S07: 790, S08: 860,
-  S11: 200, S12: 270, S13: 340, S14: 410,
-  S15: 650, S16: 720, S17: 790, S18: 860,
+  S01: 200,
+  S02: 270,
+  S03: 340,
+  S04: 410,
+  H01: 478,
+  H02: 578,
+  S05: 650,
+  S06: 720,
+  S07: 790,
+  S08: 860,
+  S11: 200,
+  S12: 270,
+  S13: 340,
+  S14: 410,
+  S15: 650,
+  S16: 720,
+  S17: 790,
+  S18: 860,
 };
 const NET_SEGMENTS = {
-  ALP: [["S01","S02"],["S02","S03"],["S03","S04"],["S04","H01"],["H01","H02"],["H02","S05"],["S05","S06"],["S06","S07"],["S07","S08"]],
-  BET: [["S11","S12"],["S12","S13"],["S13","S14"],["S14","H01"],["H01","H02"],["H02","S15"],["S15","S16"],["S16","S17"],["S17","S18"]],
+  ALP: [
+    ["S01", "S02"],
+    ["S02", "S03"],
+    ["S03", "S04"],
+    ["S04", "H01"],
+    ["H01", "H02"],
+    ["H02", "S05"],
+    ["S05", "S06"],
+    ["S06", "S07"],
+    ["S07", "S08"],
+  ],
+  BET: [
+    ["S11", "S12"],
+    ["S12", "S13"],
+    ["S13", "S14"],
+    ["S14", "H01"],
+    ["H01", "H02"],
+    ["H02", "S15"],
+    ["S15", "S16"],
+    ["S16", "S17"],
+    ["S17", "S18"],
+  ],
 };
 const NET_NORMAL_STATIONS = {
-  ALP: ["S01","S02","S03","S04","S05","S06","S07","S08"],
-  BET: ["S11","S12","S13","S14","S15","S16","S17","S18"],
+  ALP: ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08"],
+  BET: ["S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18"],
 };
 const NET_LINE_Y = { ALP: { EB: 92, WB: 116 }, BET: { EB: 268, WB: 292 } };
 const NET_LINE_COLOR = { ALP: "#ef4444", BET: "#10b981" };
@@ -793,7 +842,13 @@ function activityBufferLocs(inst, act) {
   let locs = inst.bufferSectorIds(pl.line, pl.bound, pl.lo, pl.hi, bufN);
   if (inst.bufferMirror[nature])
     locs = locs.concat(
-      inst.bufferSectorIds(pl.line, inst.opposite(pl.bound), pl.lo, pl.hi, bufN),
+      inst.bufferSectorIds(
+        pl.line,
+        inst.opposite(pl.bound),
+        pl.lo,
+        pl.hi,
+        bufN,
+      ),
     );
   return [...new Set(locs)];
 }
@@ -836,7 +891,8 @@ function initNetworkView() {
     showNetInfo(el.getAttribute("data-locid"), week, d);
   });
   document.getElementById("netWeek").addEventListener("input", (e) => {
-    document.getElementById("netWeekLabel").textContent = `Week ${e.target.value}`;
+    document.getElementById("netWeekLabel").textContent =
+      `Week ${e.target.value}`;
     const d = solved[activeScenario];
     if (d) renderNetworkView(d, +e.target.value);
   });
@@ -899,17 +955,24 @@ function renderNetworkView(d, week) {
 
   if (!d.bufferedByWeek) d.bufferedByWeek = new Map();
   if (!d.bufferedByWeek.has(week))
-    d.bufferedByWeek.set(week, bufferedLocsForWeek(d.inst, d.sched, week, d.actById));
+    d.bufferedByWeek.set(
+      week,
+      bufferedLocsForWeek(d.inst, d.sched, week, d.actById),
+    );
   const buffered = d.bufferedByWeek.get(week);
 
   const allLocIds = new Set();
   ["ALP", "BET"].forEach((line) => {
     NET_SEGMENTS[line].forEach(([from, to]) =>
-      ["EB", "WB"].forEach((b) => allLocIds.add(`SEC:${line}:${from}_${to}:${b}`)),
+      ["EB", "WB"].forEach((b) =>
+        allLocIds.add(`SEC:${line}:${from}_${to}:${b}`),
+      ),
     );
-    NET_NORMAL_STATIONS[line].concat(["H01", "H02"]).forEach((st) =>
-      ["EB", "WB"].forEach((b) => allLocIds.add(`PLAT:${line}:${st}:${b}`)),
-    );
+    NET_NORMAL_STATIONS[line]
+      .concat(["H01", "H02"])
+      .forEach((st) =>
+        ["EB", "WB"].forEach((b) => allLocIds.add(`PLAT:${line}:${st}:${b}`)),
+      );
   });
 
   allLocIds.forEach((locId) => {
@@ -934,8 +997,12 @@ function renderNetworkView(d, week) {
       segEl.setAttribute("stroke", stroke);
       segEl.setAttribute("opacity", opacity);
       if (isBuffered && !(usage && usage.groups.size))
-        segEl.setAttribute("stroke-dasharray", segEl.id.includes(":WB") ? "8,3" : "3,3");
-      else if (!segEl.id.includes(":WB")) segEl.removeAttribute("stroke-dasharray");
+        segEl.setAttribute(
+          "stroke-dasharray",
+          segEl.id.includes(":WB") ? "8,3" : "3,3",
+        );
+      else if (!segEl.id.includes(":WB"))
+        segEl.removeAttribute("stroke-dasharray");
     } else if (locEl) {
       locEl.setAttribute("fill", stroke);
       locEl.setAttribute("opacity", opacity);
@@ -944,11 +1011,12 @@ function renderNetworkView(d, week) {
         isBuffered && !(usage && usage.groups.size) ? "#f59e0b" : "none",
       );
     }
-    const statusText = usage && usage.groups.size
-      ? `${locId} · wk${week} · ${usage.groups.size}/${nominal} used`
-      : isBuffered
-        ? `${locId} · wk${week} · in buffer zone`
-        : `${locId} · wk${week} · idle`;
+    const statusText =
+      usage && usage.groups.size
+        ? `${locId} · wk${week} · ${usage.groups.size}/${nominal} used`
+        : isBuffered
+          ? `${locId} · wk${week} · in buffer zone`
+          : `${locId} · wk${week} · idle`;
     let titleEl = el.querySelector(":scope > title");
     if (!titleEl) {
       titleEl = document.createElementNS("http://www.w3.org/2000/svg", "title");
@@ -1108,10 +1176,22 @@ function selfCheck(inst, sched) {
     const rowsForAct = sched.accessRows.filter((r) => r[0] === a.activity_id);
     if (!rowsForAct.length) continue;
     const pl = inst.pathLocations(a.start_location_id, a.end_location_id);
-    let bufferLocs = inst.bufferSectorIds(pl.line, pl.bound, pl.lo, pl.hi, bufN);
+    let bufferLocs = inst.bufferSectorIds(
+      pl.line,
+      pl.bound,
+      pl.lo,
+      pl.hi,
+      bufN,
+    );
     if (inst.bufferMirror[nature])
       bufferLocs = bufferLocs.concat(
-        inst.bufferSectorIds(pl.line, inst.opposite(pl.bound), pl.lo, pl.hi, bufN),
+        inst.bufferSectorIds(
+          pl.line,
+          inst.opposite(pl.bound),
+          pl.lo,
+          pl.hi,
+          bufN,
+        ),
       );
     bufferLocs = [...new Set(bufferLocs)];
     for (const [, , week] of rowsForAct) {
@@ -1270,35 +1350,6 @@ function refreshFileList() {
   runBtn.disabled = names.length === 0;
 }
 
-document.getElementById("loadSample").addEventListener("click", async () => {
-  statusEl.textContent = "Loading bundled sample instance…";
-  try {
-    const names = [
-      "01_LINES.csv",
-      "02_STATIONS.csv",
-      "03_SECTORS.csv",
-      "04_LOCATION_SUPPLY.csv",
-      "05_BUFFER_LOCATION.csv",
-      "06_PARAMETERS.csv",
-      "07_PROJECT_DETAILS.csv",
-      "08_ACTIVITY_DETAILS.csv",
-    ];
-    for (const n of names) {
-      const res = await fetch("./sample_data/" + n);
-      if (!res.ok) throw new Error("missing " + n);
-      uploaded[n] = await res.text();
-    }
-    saveToStorage();
-    refreshFileList();
-    statusEl.textContent = "Sample instance loaded. Ready to run.";
-    statusEl.className = "status ok";
-  } catch (err) {
-    statusEl.textContent =
-      "Sample data not bundled with this deployment — please upload the 8 CSVs manually.";
-    statusEl.className = "status err";
-  }
-});
-
 runBtn.addEventListener("click", () => {
   runBtn.disabled = true;
   statusEl.textContent = "Parsing instance…";
@@ -1320,8 +1371,17 @@ runBtn.addEventListener("click", () => {
         const hotspots = capacityHotspots(inst, sched);
         const locWeekIndex = buildLocWeekIndex(sched);
         solved[sc] = {
-          sched, access, occ, res, checks, score, hotspots,
-          inst, actById, locWeekIndex, bufferedByWeek: new Map(),
+          sched,
+          access,
+          occ,
+          res,
+          checks,
+          score,
+          hotspots,
+          inst,
+          actById,
+          locWeekIndex,
+          bufferedByWeek: new Map(),
         };
       });
       statusEl.textContent =
@@ -1509,9 +1569,16 @@ function renderScenario() {
   const cmpBody = document.querySelector("#compareTable tbody");
   cmpBody.innerHTML = "";
   const metricRows = [
-    ["Feasible (self-check)", (s) => (s.checks.every((c) => c[0] !== "FAIL") ? "✓" : "✗ see self-check")],
+    [
+      "Feasible (self-check)",
+      (s) =>
+        s.checks.every((c) => c[0] !== "FAIL") ? "✓" : "✗ see self-check",
+    ],
     ["Overrun days total", (s) => s.score.overrunDaysTotal],
-    ["Contracts overrunning", (s) => `${s.score.contractsOverrunning}/${s.res.rows.length}`],
+    [
+      "Contracts overrunning",
+      (s) => `${s.score.contractsOverrunning}/${s.res.rows.length}`,
+    ],
     ["Excess access-nights", (s) => s.score.excessAccessNightsTotal],
     ["ECLO nights used", (s) => s.score.ecloNightsTotal],
     ["Priority-weighted overrun", (s) => s.score.priorityWeightedScore],
@@ -1618,8 +1685,6 @@ document.getElementById("accFilter").addEventListener("input", (e) => {
   if (d) renderAccTable(d, e.target.value);
 });
 
-
-
 /* =========================================================
    THEME SWITCH
    ========================================================= */
@@ -1633,8 +1698,10 @@ document.getElementById("accFilter").addEventListener("input", (e) => {
       b.setAttribute("aria-checked", String(b.dataset.themeSet === theme)),
     );
     if (!userClick) return;
-    try { localStorage.setItem("theme", theme); } catch (e) {}
-    void document.body.offsetHeight;          // flush style + layout now
+    try {
+      localStorage.setItem("theme", theme);
+    } catch (e) {}
+    void document.body.offsetHeight; // flush style + layout now
     if (typeof calendar !== "undefined" && calendar) calendar.updateSize();
   }
 
@@ -1680,7 +1747,8 @@ document.getElementById("accFilter").addEventListener("input", (e) => {
   });
 
   side.addEventListener("transitionend", (e) => {
-    if (e.target === side && e.propertyName === "margin-left") refreshCalendar();
+    if (e.target === side && e.propertyName === "margin-left")
+      refreshCalendar();
   });
 
   sync();
