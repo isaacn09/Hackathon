@@ -943,7 +943,10 @@ tr:hover td {
 
 .net-svg-wrap [data-locid] {
   cursor: pointer;
-  transition: stroke 0.15s, fill 0.15s, opacity 0.15s;
+  transition:
+    stroke 0.15s,
+    fill 0.15s,
+    opacity 0.15s;
 }
 
 .net-svg-wrap [data-locid]:hover {
@@ -1072,21 +1075,9 @@ tr:hover td {
   color: #dc2626; /* Darker red only on hover */
 }
 
-
 /* =========================================================
    THEME TOGGLE + THEME-AWARE OVERRIDES
    ========================================================= */
-
-
-
-
-
-
-
-
-
-
-
 
 /* Make tables and the calendar take their colours straight from the theme */
 td {
@@ -1111,7 +1102,6 @@ td {
 .fc .fc-daygrid-day-number {
   color: var(--text);
 }
-
 
 /* =========================================================
    THEME SWITCH (segmented control)
@@ -1200,7 +1190,6 @@ td {
 :root[data-theme="dark"] .theme-seg .opt[data-theme-set="dark"] {
   color: #1a1204;
 }
-
 
 /* =========================================================
    SIDEBAR COLLAPSE
